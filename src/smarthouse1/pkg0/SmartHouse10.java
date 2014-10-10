@@ -15,56 +15,32 @@ import java.util.concurrent.TimeUnit;
  * @author nursultan.kabylkas
  */
 public class SmartHouse10 {
-
   /**
    * @param args the command line arguments
    */
   public static void main(String[] args) {
+    // create packet handler
     packageHandler ph = new packageHandler("COM3");
-
     ph.startReading();
     ph.startSending();
 
-    List<Integer> tempData = new LinkedList<>();
-    Package tempPack = new Package(3, 0x22, 0x11, 0xAA, tempData);;
-    System.out.print("Enter the stream of commands: ");
-    while (true) {
-        boolean send = true;
-        
-        try {
-        char inChar = (char) System.in.read();
-        if (inChar == '1') {
-          //construct packet 1
-          tempData = new LinkedList<>();
-          tempPack = new Package(3, 0x22, 0x11, 0xAA, tempData);
-        } else if (inChar == '2') {
-          //construct packet 2
-          tempData = new LinkedList<>();
-          tempPack = new Package(3, 0x22, 0x11, 0x55, tempData);
-        } else if (inChar == '3') {
-          //construct packet 3
-          tempData = new LinkedList<>();
-          tempData.add(23);
-          tempData.add(25);
-          tempData.add(12);
-          tempPack = new Package(3 + tempData.size(), 0x22, 0x11, 0xAA, tempData);
-        } else {
-          send = false;
-        }
-      } catch (IOException e) {
-        System.out.println("Error reading from user");
-      }
-      if (send) {
-        synchronized (ph.getOutPacks()) {
-          ph.getOutPacks().add(tempPack);
-        }
-      }
-      /*ph.outAllPacks();
-       try {
-       TimeUnit.SECONDS.sleep(2);
-       } catch (InterruptedException e) {
-       System.out.println(e.toString());
-       }*/
-    }
+    // create sensor handler
+    SensorHandler sh = new SensorHandler(ph.getInPacks());
+    
+    // instantiate and add motion sensor to the system
+    int houseId = 0x11;
+    int deviceId = 0x4d;
+    int localId = 0xDE;
+    Sensor motionSensor = new BinarySensor(houseId, deviceId, localId);
+    sh.addSensor(motionSensor);
+    
+    // instantiate and add relay switch to the system
+    deviceId = 0x52;
+    localId = 0xAD;
+    Sensor relay = new BinarySensor(houseId, deviceId, localId);
+    sh.addSensor(relay);
+    
+    // instantiate communication between the sensors
+    SensorComm comm = new SensorComm();
   }
 }

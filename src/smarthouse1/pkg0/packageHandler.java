@@ -11,8 +11,8 @@ public class packageHandler {
   private SerialPort serialPort;
   private InputStream inStream;
   private OutputStream outStream;
-  private List<Package> incomingPacks;
-  private List<Package> outcomingPacks;
+  private final List<Package> incomingPacks;
+  private final List<Package> outcomingPacks;
 
   public packageHandler(String portName) {
     incomingPacks = new LinkedList<>();
@@ -60,6 +60,12 @@ public class packageHandler {
   public void startSending() {
     Thread sender = new Thread(new PackageSender(outcomingPacks, outStream));
     sender.start();
+  }
+  
+  public List<Package> getInPacks() {
+    synchronized (this.incomingPacks) {
+      return this.incomingPacks;
+    }
   }
 
   public List<Package> getOutPacks() {

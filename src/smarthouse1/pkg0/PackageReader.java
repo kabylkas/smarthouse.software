@@ -8,8 +8,8 @@ import java.util.logging.Logger;
 
 public class PackageReader implements Runnable {
 
-  private List<Package> incomingPacks;
-  private InputStream inStream;
+  private final List<Package> incomingPacks;
+  private final InputStream inStream;
 
   public PackageReader(List incomingPacks, InputStream inStream) {
     this.incomingPacks = incomingPacks;

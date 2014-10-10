@@ -12,11 +12,13 @@ public class Sensor {
     protected int device_id;
     protected int local_id;
     protected int house_id;
+    protected SensorComm comm;
     
-    public Sensor(int house_id, int device_id, int local_id){
+    public Sensor(int house_id, int device_id, int local_id, SensorComm comm){
         this.house_id = house_id;
         this.device_id = device_id;
         this.local_id = local_id;
+        this.comm = comm;
     }
     
     public int getDeviceId() {
