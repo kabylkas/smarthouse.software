@@ -19,16 +19,17 @@ public class SmartHouse10 {
    * @param args the command line arguments
    */
   public static void main(String[] args) {
+    // house_id
+    int houseId = 0x13;
     // create packet handler
     packageHandler ph = new packageHandler("COM3");
     ph.startReading();
     ph.startSending();
 
     // create sensor handler
-    SensorHandler sh = new SensorHandler(ph.getInPacks());
+    SensorHandler sh = new SensorHandler(ph.getInPacks(), ph.getOutPacks(), houseId);
     
     // instantiate and add motion sensor to the system
-    int houseId = 0x11;
     int deviceId = 0x4d;
     int localId = 0xDE;
     Sensor motionSensor = new BinarySensor(houseId, deviceId, localId);
@@ -41,6 +42,7 @@ public class SmartHouse10 {
     sh.addSensor(relay);
     
     // instantiate communication between the sensors
-    SensorComm comm = new SensorComm();
+    SensorComm comm = new SensorComm(motionSensor, relay);
+    
   }
 }
